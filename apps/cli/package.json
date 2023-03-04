@@ -1,0 +1,26 @@
+{
+  "name": "@assignment1/cli",
+  "version": "0.0.1",
+  "license": "UNLICENSED",
+  "main": "dist/main",
+  "typings": "dist/main",
+  "private": true,
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.3",
+    "@types/lodash": "^4.14.186",
+    "@types/node": "^18.11.9",
+    "@types/yargs": "^17.0.19"
+  },
+  "dependencies": {
+    "@assignment1/core": "workspace:^",
+    "@assignment1/server": "workspace:^",
+    "better-sqlite3": "^8.1.0",
+    "lodash": "^4.17.21",
+    "ms": "^2.1.3",
+    "yargs": "^17.6.0"
+  },
+  "scripts": {
+    "watch": "tsc -p ./tsconfig.json -w",
+    "build": "tsc -p ./tsconfig.json"
+  }
+}
