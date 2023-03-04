@@ -43,6 +43,7 @@ export interface User {
   createdAt?: Date;
   updatedAt?: Date;
   profile?: UserProfile;
+  balanceAmount?: number;
 }
 
 export type SessionUser = Pick<User, "id" | "email" | "role">;

@@ -1,12 +1,12 @@
 import { AppShell, Header, Avatar, Button, Group, LoadingOverlay, Text, Menu } from "@mantine/core";
 import gravatarUrl from "gravatar-url";
-import { Link } from "react-router-dom";
-import { SessionUser } from "@assignment1/core";
+import { Link, Navigate } from "react-router-dom";
 
 import { appConfig } from "../config";
-import { useRpcSession } from "../rpc/hooks";
+import useSession from "../hooks/useSession";
+import useUserInfo, { UserInfo } from "../hooks/useUserInfo";
 
-function AppHeader({ user }: { user?: SessionUser }) {
+function AppHeader({ userInfo }: { userInfo: UserInfo }) {
   return (
     <Header height={80} className="flex justify-between content-center px-20">
       <Group className="flex logo content-center">
@@ -14,25 +14,37 @@ function AppHeader({ user }: { user?: SessionUser }) {
           <Link to="/">{appConfig.info.name}</Link>
         </h1>
       </Group>
-      <Group className="flex content-center">
-        {user && (
+      <Group className="flex content-relative">
+        {userInfo.id && (
           <Menu shadow="md" width={200}>
             <Menu.Target>
-              <Button variant="outline" color="gray">
-                <Avatar
-                  size="sm"
-                  src={gravatarUrl(user.email, { size: 40, default: "mp" })}
-                  alt={user.email}
-                  radius="xl"
-                  style={{ marginRight: 10 }}
-                />
-                {user.email}
+              <Button
+                variant="outline"
+                color="gray"
+                styles={() => ({
+                  root: {
+                    height: 55,
+                  },
+                })}>
+                <div className="flex flex-row items-center flex-wrap py-20">
+                  <Avatar
+                    size="sm"
+                    src={gravatarUrl(userInfo.email, { size: 40, default: "mp" })}
+                    alt={userInfo.email}
+                    radius="xl"
+                    className="mr-4 flex"
+                  />
+                  <div className="flex flex-col py-10">
+                    <Text size="sm">{userInfo.email}</Text>
+                    <Text>Balance: {userInfo.loading ? "--" : userInfo.balanceAmount}</Text>
+                  </div>
+                </div>
               </Button>
             </Menu.Target>
 
             <Menu.Dropdown>
               {[
-                { to: "/create", title: "Create item" },
+                { to: "/create-item", title: "Create item" },
                 { to: "/deposit", title: "Deposit" },
                 {
                   to: "#",
@@ -44,8 +56,8 @@ function AppHeader({ user }: { user?: SessionUser }) {
                 },
               ].map((item) => {
                 return (
-                  <Menu.Item>
-                    <Link to={item.to} className="py-2" key={item.to} onClick={item.onClick}>
+                  <Menu.Item key={item.to}>
+                    <Link to={item.to} className="py-2" onClick={item.onClick}>
                       <Text>{item.title}</Text>
                     </Link>
                   </Menu.Item>
@@ -63,21 +75,21 @@ export default function AppLayout({
   children,
   loading,
   title,
+  requireAuth = false,
 }: {
   children: React.ReactNode;
   loading?: boolean;
   title?: string;
+  requireAuth?: boolean;
 }) {
-  const { user } = useRpcSession();
+  const { isLoggedIn } = useSession();
+  const userInfo = useUserInfo();
+  if (requireAuth && !isLoggedIn) {
+    return <Navigate to="/login" />;
+  }
 
   return (
-    <AppShell
-      padding={0}
-      className="px-20"
-      header={<AppHeader user={user} />}
-      styles={(theme) => ({
-        // Override default styles
-      })}>
+    <AppShell padding={0} className="px-20" header={<AppHeader userInfo={userInfo} />}>
       {title && <h2>{title}</h2>}
       <div className="main relative">
         <LoadingOverlay visible={Boolean(loading)} overlayBlur={3} />

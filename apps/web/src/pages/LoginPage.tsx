@@ -4,7 +4,8 @@ import { TextInput, Button, Box, Group } from "@mantine/core";
 import { UserLoginInput, Validator } from "@assignment1/core";
 
 import AppLayout from "../components/AppLayout";
-import { useRpcSession, useRpcService } from "../rpc/hooks";
+import useSession from "../hooks/useSession";
+import useRpcService from "../hooks/useRpcService";
 import { toFormValidator } from "../utils";
 
 function LoginForm({
@@ -54,7 +55,7 @@ function LoginForm({
 }
 
 function LoginPage() {
-  const { user, authenticate } = useRpcSession();
+  const { user, authenticate } = useSession();
   const navigate = useNavigate();
   const { userLogin } = useRpcService();
   if (user) {

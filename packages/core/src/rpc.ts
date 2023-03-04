@@ -5,7 +5,6 @@ import { RpcHandlerOf, rpcMethod } from "./base";
 export interface GetInfoResult {
   system: { version: string };
   session?: SessionState;
-  user?: User;
 }
 
 export interface UserLoginResult {
@@ -20,10 +19,15 @@ export interface UserRegisterResult {
   authToken: string;
 }
 
+export interface UserDepositResult {
+  balanceAmount: number;
+}
+
 export const rpcSchema = {
   getInfo: rpcMethod<GetInfoResult>().input(Validator.getInfo()),
   userRegister: rpcMethod<UserRegisterResult>().input(Validator.userRegister()),
   userLogin: rpcMethod<UserLoginResult>().input(Validator.userLogin()),
+  userDeposit: rpcMethod<UserDepositResult>().input(Validator.userDeposit()),
 };
 
 export type RpcSchema = typeof rpcSchema;

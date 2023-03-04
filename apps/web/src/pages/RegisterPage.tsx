@@ -3,10 +3,11 @@ import { useForm } from "@mantine/form";
 import { TextInput, Button, Box, Group } from "@mantine/core";
 import { UserRegisterInput, Validator } from "@assignment1/core";
 
-import { useRpcSession, useRpcService } from "../rpc/hooks";
 import { toFormValidator } from "../utils";
 import { JSONRPCErrorException } from "json-rpc-2.0";
 import AppLayout from "../components/AppLayout";
+import useRpcService from "../hooks/useRpcService";
+import useSession from "../hooks/useSession";
 
 function RegisterForm({ onSubmit }: { onSubmit: (values: UserRegisterInput) => Promise<void> }) {
   const form = useForm<UserRegisterInput>({
@@ -54,7 +55,7 @@ function RegisterForm({ onSubmit }: { onSubmit: (values: UserRegisterInput) => P
 }
 
 function RegisterPage() {
-  const { user, authenticate } = useRpcSession();
+  const { user, authenticate } = useSession();
   const { userRegister } = useRpcService();
   const navigate = useNavigate();
   if (user) {

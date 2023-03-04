@@ -9,6 +9,8 @@ import {
   UserRegisterInput,
   UserRegisterResult,
   SessionUser,
+  UserDepositInput,
+  UserDepositResult,
 } from "@assignment1/core";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -90,5 +92,17 @@ export class JsonRpcHandler extends BaseModule implements RpcHandler {
       user,
       authToken: this.signAuthToken(_.omit(user)),
     };
+  }
+
+  async userDeposit(input: UserDepositInput, session?: SessionState): Promise<UserDepositResult> {
+    const { amount } = input;
+    const user = this.requireUser(session);
+    const userDoc = await this.storage.users.findOne({ id: user.id });
+    if (!userDoc) {
+      throw newError(ErrorCode.INTERNAL_SERVER_ERROR, `User not found: ${user.id}`);
+    }
+    userDoc.balanceAmount = (userDoc.balanceAmount || 0) + amount;
+    await userDoc.save();
+    return { balanceAmount: userDoc.balanceAmount! };
   }
 }

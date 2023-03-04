@@ -52,7 +52,6 @@ export class RpcClient {
   withSession(token: string) {
     return new RpcClient({
       ...this.options,
-      service: this.service,
       httpClient: this.httpClient,
       jwtToken: token,
       user: parseJwt(token),

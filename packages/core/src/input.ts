@@ -19,6 +19,10 @@ export interface UserLoginInput {
   password: string;
 }
 
+export interface UserDepositInput {
+  amount: number;
+}
+
 export class Validator {
   static id() {
     return Joi.string().alphanum();
@@ -72,5 +76,11 @@ export class Validator {
 
   static getInfo() {
     return Joi.object<{}>();
+  }
+
+  static userDeposit() {
+    return Joi.object<UserDepositInput>({
+      amount: Joi.number().required(),
+    });
   }
 }

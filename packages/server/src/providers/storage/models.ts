@@ -41,6 +41,7 @@ export const UserSchema = new Schema<core.User>(
     email: { type: String, index: true },
     password: { type: String },
     profile: { type: UserProfileSchema },
+    balanceAmount: { type: Number, index: true },
   },
   {
     minimize: false,
