@@ -5,7 +5,7 @@ import { MantineProvider } from "@mantine/core";
 
 import "./index.css";
 import router from "./router";
-import { RpcSessionProvider } from "./rpc/hooks";
+import { RpcProvider } from "./rpc/hooks";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -16,9 +16,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         fontFamily: "Inter, Avenir, Helvetica, Arial, sans-serif",
         primaryColor: "dark",
       }}>
-      <RpcSessionProvider>
+      <RpcProvider>
         <RouterProvider router={router} />
-      </RpcSessionProvider>
+      </RpcProvider>
     </MantineProvider>
   </React.StrictMode>,
 );

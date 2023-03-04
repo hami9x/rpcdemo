@@ -1,4 +1,4 @@
-import { rpcSchema, RpcSchema, SessionState } from "@assignment1/core";
+import { RpcHandler, rpcSchema, RpcSchema, SessionState, SessionUser } from "@assignment1/core";
 import axios, { AxiosInstance, AxiosRequestConfig, CreateAxiosDefaults } from "axios";
 import { JSONRPCClient } from "json-rpc-2.0";
 
@@ -7,28 +7,28 @@ import { parseJwt } from "../utils";
 export interface RpcClientParams {}
 
 export class RpcClient {
-  service: RpcSchema;
+  service: RpcHandler;
   httpClient: AxiosInstance;
   jsonRpcClient: JSONRPCClient<RpcClientParams>;
   jwtToken?: string;
-  session: SessionState;
+  user?: SessionUser;
 
   constructor(
     public options: {
       endpoint: string;
       httpClientOptions?: CreateAxiosDefaults<any>;
       httpClient?: AxiosInstance;
-      service?: RpcSchema;
+      service?: RpcHandler;
       jwtToken?: string;
       jsonRpcClient?: JSONRPCClient<RpcClientParams>;
-      session?: SessionState;
+      user?: SessionUser;
     },
   ) {
     this.httpClient = options.httpClient ?? axios.create(options.httpClientOptions);
     this.service = options.service ?? this.createClientService();
     this.jsonRpcClient = options.jsonRpcClient ?? this.createJsonRpcClient();
     this.jwtToken = options.jwtToken;
-    this.session = options.session ?? {};
+    this.user = options.user;
   }
 
   private createJsonRpcClient(): JSONRPCClient<RpcClientParams> {
@@ -55,16 +55,16 @@ export class RpcClient {
       service: this.service,
       httpClient: this.httpClient,
       jwtToken: token,
-      session: parseJwt(token),
+      user: parseJwt(token),
     });
   }
 
-  private createClientService(): RpcSchema {
+  private createClientService(): RpcHandler {
     const service = {} as any;
     for (const method of Object.keys(rpcSchema)) {
       service[method] = this.createMethodWrapper(method as keyof RpcSchema);
     }
-    return service as RpcSchema;
+    return service as RpcHandler;
   }
 
   private createMethodWrapper(method: keyof RpcSchema): any {

@@ -1,17 +1,19 @@
-import { LoadingOverlay } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { MainLayout } from "../layouts/main";
+import { Navigate } from "react-router-dom";
+import { useRpcSession } from "../rpc/hooks";
+import AppLayout from "../components/AppLayout";
 
 function HomePage() {
-  // const rpc = useRpcService();
-  const [isLoading, { close }] = useDisclosure(true);
+  const { isLoggedIn, user } = useRpcSession();
+  const [isLoading] = useDisclosure(false);
+  if (!isLoggedIn) {
+    return <Navigate to="/login" />;
+  }
 
   return (
-    <MainLayout loading={isLoading}>
-      <div>
-        <h1>Home</h1>
-      </div>
-    </MainLayout>
+    <AppLayout loading={isLoading}>
+      <div></div>
+    </AppLayout>
   );
 }
 

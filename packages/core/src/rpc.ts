@@ -12,6 +12,7 @@ export interface UserLoginResult {
   ok: boolean;
   user?: User;
   authToken?: string;
+  message?: string;
 }
 
 export interface UserRegisterResult {

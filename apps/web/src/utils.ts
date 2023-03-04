@@ -1,5 +1,7 @@
 import ms from "ms";
 import { useEffect } from "react";
+import Joi from "joi";
+import { FormValidateInput } from "@mantine/form/lib/types";
 
 export function parseJwt(token: string): any {
   try {
@@ -41,4 +43,16 @@ export function timeAgo(time: Date): string {
     return Math.floor(elapsedMs / ms("1s")) + "s";
   }
   return "0s";
+}
+
+export function toFormValidator<T>(schema: Joi.ObjectSchema<T>): FormValidateInput<T> {
+  return (value) => {
+    const { error } = schema.validate(value, { abortEarly: false });
+    if (error) {
+      return error.details.reduce((errors, detail) => {
+        return { ...errors, [detail.path.join(".")]: detail.message };
+      }, {});
+    }
+    return true;
+  };
 }

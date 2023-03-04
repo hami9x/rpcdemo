@@ -15,8 +15,7 @@
     "isolatedModules": true,
     "strictNullChecks": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "plugins": [{ "transform": "ts-transformer-keys/transformer" }]
+    "jsx": "react-jsx"
   },
   "include": ["src", "../../packages/core/src/idl/_rollup.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]

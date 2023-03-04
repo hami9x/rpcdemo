@@ -1,37 +1,49 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
+
 import { appConfig } from "../config";
 import { RpcClient } from "./client";
 
-export interface RpcSessionContextValue {
-  rpcClient: RpcClient;
-  setRpcClient: React.Dispatch<React.SetStateAction<RpcClient>>;
+export interface RpcContextValue {
+  client: RpcClient;
+  setClient: React.Dispatch<React.SetStateAction<RpcClient>>;
   authenticate: (token: string) => void;
 }
 
-export const RpcSessionContext = React.createContext<RpcSessionContextValue>({
-  rpcClient: getDefaultRpcClient(),
-  setRpcClient: () => {},
+export const RpcContext = React.createContext<RpcContextValue>({
+  client: getDefaultRpcClient(),
+  setClient: () => {},
   authenticate: () => {},
 });
 
-export function useRpcService() {
-  const { rpcClient } = useContext(RpcSessionContext);
-  return rpcClient.service;
-}
-
 function getDefaultRpcClient() {
-  return new RpcClient({ endpoint: appConfig.rpcEndpoint });
+  const client = new RpcClient({ endpoint: appConfig.rpcEndpoint });
+  const sessionToken = localStorage.getItem("session");
+  return sessionToken ? client.withSession(sessionToken) : client;
 }
 
-export function RpcSessionProvider({ children }: { children: React.ReactNode }) {
-  const [rpcClient, setRpcClient] = useState<RpcClient>(getDefaultRpcClient());
+export function RpcProvider({ children }: { children: React.ReactNode }) {
+  const [client, setClient] = useState<RpcClient>(getDefaultRpcClient());
   const authenticate = (token: string) => {
-    setRpcClient(rpcClient.withSession(token));
+    setClient(client.withSession(token));
+    localStorage.setItem("session", token);
   };
   (window as any).authenticate = authenticate;
   return (
-    <RpcSessionContext.Provider value={{ rpcClient, setRpcClient, authenticate }}>
+    <RpcContext.Provider value={{ client, setClient, authenticate }}>
       {children}
-    </RpcSessionContext.Provider>
+    </RpcContext.Provider>
   );
+}
+
+export function useRpcService() {
+  return useContext(RpcContext).client.service;
+}
+
+export function useRpcSession() {
+  const { client, authenticate } = useContext(RpcContext);
+  return {
+    authenticate,
+    user: client.user,
+    isLoggedIn: !!client.user,
+  };
 }

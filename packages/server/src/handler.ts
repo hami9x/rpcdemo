@@ -8,6 +8,7 @@ import {
   UserLoginResult,
   UserRegisterInput,
   UserRegisterResult,
+  SessionUser,
 } from "@assignment1/core";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -39,7 +40,7 @@ export class JsonRpcHandler extends BaseModule implements RpcHandler {
       const userId = session.user.id;
       const user = await this.storage.users.findOne({ id: userId });
       if (!user) {
-        throw newError(ErrorCode.INTERNAL_SERVER_ERROR, `user not found: ${userId}`);
+        throw newError(ErrorCode.INTERNAL_SERVER_ERROR, `User not found: ${userId}`);
       }
       session.user = user.toObject();
     }
@@ -53,14 +54,14 @@ export class JsonRpcHandler extends BaseModule implements RpcHandler {
     return bcrypt.hash(password, 10);
   }
 
-  private signAuthToken(user: { id: string; email: string; role?: string }) {
+  private signAuthToken(user: SessionUser) {
     return jwt.sign(user, this.config.auth.jwtSecret, this.config.auth.jwtOptions);
   }
 
   async userRegister(input: UserRegisterInput): Promise<UserRegisterResult> {
     const { email } = input;
     if (await this.storage.users.exists({ email })) {
-      throw newError(ErrorCode.INVALID_REQUEST, "email already exists");
+      throw newError(ErrorCode.INVALID_REQUEST, "Email already exists");
     }
 
     const userDoc = await this.storage.users.create({
@@ -81,7 +82,7 @@ export class JsonRpcHandler extends BaseModule implements RpcHandler {
       $or: [{ email: identifier }],
     });
     if (!userDoc || !userDoc.password || !(await bcrypt.compare(password, userDoc.password))) {
-      return { ok: false };
+      return { ok: false, message: "Invalid email or password" };
     }
     const user = userDoc.toObject();
     return {

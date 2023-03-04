@@ -45,6 +45,8 @@ export interface User {
   profile?: UserProfile;
 }
 
+export type SessionUser = Pick<User, "id" | "email" | "role">;
+
 export interface UserProfile {
   name: string;
 }

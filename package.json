@@ -42,8 +42,10 @@
   },
   "packageManager": "yarn@3.2.4",
   "dependencies": {
+    "@mantine/form": "^6.0.0",
     "@types/debug": "^4.1.7",
     "debug": "^4.3.4",
+    "gravatar-url": "^4.0.1",
     "monk": "^7.3.4"
   }
 }
