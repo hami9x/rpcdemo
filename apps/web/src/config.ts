@@ -5,7 +5,7 @@ function getEnv(name: string, defaultValue: any) {
 export function getConfig() {
   return {
     info: {
-      name: getEnv("APP_INFO_NAME", "Demo"),
+      name: getEnv("APP_INFO_NAME", "AuctionX"),
     },
     rpcEndpoint: getEnv("APP_RPC_ENDPOINT", "http://localhost:4001/rpc"),
   };

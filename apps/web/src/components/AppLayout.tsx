@@ -1,12 +1,46 @@
 import { AppShell, Header, Avatar, Button, Group, LoadingOverlay, Text, Menu } from "@mantine/core";
 import gravatarUrl from "gravatar-url";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate, useNavigate, Link } from "react-router-dom";
 
 import { appConfig } from "../config";
 import useSession from "../hooks/useSession";
-import useUserInfo, { UserInfo } from "../hooks/useUserInfo";
+import useUserInfo from "../hooks/useUserInfo";
+import { UserInfoValue } from "../contexts/userInfo";
 
-function AppHeader({ userInfo }: { userInfo: UserInfo }) {
+function MenuLink({
+  to,
+  children,
+  onClick,
+  ...props
+}: {
+  to: string;
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}) {
+  const navigate = useNavigate();
+  const navigateWithReload = (to: string) => {
+    if (to == window.location.pathname) {
+      window.location.reload();
+    } else {
+      navigate(to, { state: { date: Date.now() } });
+    }
+  };
+  return (
+    <Menu.Item
+      {...props}
+      component="a"
+      href={to}
+      onClick={(event) => {
+        onClick ? onClick() : navigateWithReload(to);
+        event.preventDefault();
+      }}>
+      {children}
+    </Menu.Item>
+  );
+}
+
+function AppHeader({ userInfo }: { userInfo: UserInfoValue }) {
   return (
     <Header height={80} className="flex justify-between content-center px-20">
       <Group className="flex logo content-center">
@@ -15,9 +49,9 @@ function AppHeader({ userInfo }: { userInfo: UserInfo }) {
         </h1>
       </Group>
       <Group className="flex content-relative">
-        {userInfo.id && (
-          <Menu shadow="md" width={200}>
-            <Menu.Target>
+        <Menu shadow="md" width={200} transitionProps={{ transition: "rotate-right", duration: 0 }}>
+          <Menu.Target>
+            {userInfo.id ? (
               <Button
                 variant="outline"
                 color="gray"
@@ -40,32 +74,32 @@ function AppHeader({ userInfo }: { userInfo: UserInfo }) {
                   </div>
                 </div>
               </Button>
-            </Menu.Target>
+            ) : (
+              <div></div>
+            )}
+          </Menu.Target>
 
-            <Menu.Dropdown>
-              {[
-                { to: "/create-item", title: "Create item" },
-                { to: "/deposit", title: "Deposit" },
-                {
-                  to: "#",
-                  title: "Logout",
-                  onClick: () => {
-                    localStorage.removeItem("session");
-                    window.location.reload();
-                  },
+          <Menu.Dropdown>
+            {[
+              { to: "/create-item", title: "Create item" },
+              { to: "/deposit", title: "Deposit" },
+              {
+                to: "#logout",
+                title: "Logout",
+                onClick: () => {
+                  localStorage.removeItem("session");
+                  window.location.reload();
                 },
-              ].map((item) => {
-                return (
-                  <Menu.Item key={item.to}>
-                    <Link to={item.to} className="py-2" onClick={item.onClick}>
-                      <Text>{item.title}</Text>
-                    </Link>
-                  </Menu.Item>
-                );
-              })}
-            </Menu.Dropdown>
-          </Menu>
-        )}
+              },
+            ].map((item) => {
+              return (
+                <MenuLink key={item.to} to={item.to} className="py-2" onClick={item.onClick}>
+                  <Text>{item.title}</Text>
+                </MenuLink>
+              );
+            })}
+          </Menu.Dropdown>
+        </Menu>
       </Group>
     </Header>
   );

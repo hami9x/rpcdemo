@@ -59,8 +59,23 @@ export const ItemSchema = new Schema<core.Item>(
     id: { type: String, unique: true },
     name: { type: String, index: true },
     startingPrice: { type: Number, index: true },
+    currentPrice: { type: Number, index: true },
     userId: { type: String, index: true },
     endingAt: { type: Date, index: true },
+  },
+  {
+    minimize: false,
+    timestamps: true,
+    ...buildModelProperties(),
+  },
+);
+
+export const BidSchema = new Schema<core.Bid>(
+  {
+    id: { type: String, unique: true },
+    itemId: { type: String, index: true },
+    userId: { type: String, index: true },
+    price: { type: Number, index: true },
   },
   {
     minimize: false,

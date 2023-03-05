@@ -40,7 +40,7 @@ export interface User {
   email: string;
   password?: string;
   role?: UserRole;
-  createdAt?: Date;
+  createdAt: Date;
   updatedAt?: Date;
   profile?: UserProfile;
   balanceAmount?: number;
@@ -62,7 +62,17 @@ export interface Item {
   name: string;
   userId: string;
   startingPrice: number;
+  currentPrice: number;
   endingAt: Date;
-  createdAt?: Date;
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
+export interface Bid {
+  id: string;
+  itemId: string;
+  userId: string;
+  price: number;
+  createdAt: Date;
   updatedAt?: Date;
 }

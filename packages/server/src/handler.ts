@@ -24,6 +24,7 @@ import _ from "lodash";
 import { AppProviders, BaseModule } from "./core";
 import { ErrorCode, newError } from "./error";
 import { paginatedQuery } from "./helpers";
+import { CreateBidInput, CreateBidResult, User } from "./providers/storage/models";
 
 const defaultSystemInfo = {
   version: pkgInfo.version,
@@ -34,12 +35,21 @@ export class JsonRpcHandler extends BaseModule implements RpcHandler {
     super(services);
   }
 
-  private requireUser(session?: SessionState) {
+  private requireUser(session?: SessionState): SessionUser {
     const user = session?.user;
     if (!user) {
       throw newError(ErrorCode.UNAUTHENTICATED);
     }
     return user;
+  }
+
+  private async requireFetchUser(session: SessionState | undefined): Promise<User> {
+    const user = this.requireUser(session);
+    const userDoc = await this.storage.users.findOne({ id: user.id });
+    if (!userDoc) {
+      throw newError(ErrorCode.INTERNAL_SERVER_ERROR, `User not found: ${user.id}`);
+    }
+    return userDoc.toObject();
   }
 
   async getInfo(_params: {}, session?: SessionState): Promise<GetInfoResult> {
@@ -126,6 +136,7 @@ export class JsonRpcHandler extends BaseModule implements RpcHandler {
       userId: user.id,
       name: input.name,
       startingPrice: input.startingPrice,
+      currentPrice: input.startingPrice,
       endingAt: input.endingAt,
     });
     return { item: itemDoc.toObject() };
@@ -139,5 +150,62 @@ export class JsonRpcHandler extends BaseModule implements RpcHandler {
         filterStatus == ItemStatus.Active ? { $gt: new Date() } : { $lte: new Date() };
     }
     return await paginatedQuery(this.storage.items, query, input);
+  }
+
+  async createBid(input: CreateBidInput, session?: SessionState): Promise<CreateBidResult> {
+    const user = await this.requireFetchUser(session);
+
+    // validate
+    const oldBid = await this.storage.bids.findOne({ itemId: input.itemId, userId: user.id });
+    if (oldBid && oldBid.createdAt > new Date(Date.now() - 5 * 1000)) {
+      throw newError(ErrorCode.INVALID_REQUEST, "You can only bid once every 5 seconds");
+    }
+    const item = await this.storage.items.findOne({ id: input.itemId });
+    if (!item) {
+      throw newError(ErrorCode.INVALID_REQUEST, "Item not found");
+    }
+    if (item.endingAt <= new Date()) {
+      throw newError(ErrorCode.INVALID_REQUEST, "Auction has ended");
+    }
+    if (item.currentPrice >= input.price) {
+      throw newError(ErrorCode.INVALID_REQUEST, "Bid price too low");
+    }
+
+    // check balance
+    const reclaimedCost = oldBid?.price ?? 0;
+    const newCost = input.price;
+    const netCost = reclaimedCost - newCost;
+    if ((user.balanceAmount ?? 0) + netCost < 0) {
+      throw newError(ErrorCode.INVALID_REQUEST, "Account balance not enough");
+    }
+
+    const [bidDoc] = await this.storage.transact((session) => {
+      return Promise.all([
+        this.storage.bids.findOneAndUpdate(
+          {
+            itemId: input.itemId,
+            userId: user.id,
+          },
+          {
+            id: this.storage.generateId(),
+            price: input.price,
+            itemId: input.itemId,
+            userId: user.id,
+          },
+          { session, new: true, upsert: true },
+        ),
+        this.storage.users.findOneAndUpdate(
+          { id: user.id },
+          { $inc: { balanceAmount: netCost } },
+          { session, new: true },
+        ),
+        this.storage.items.updateOne(
+          { id: input.itemId },
+          { $set: { currentPrice: input.price } },
+          { session },
+        ),
+      ]);
+    });
+    return { bid: bidDoc.toObject() };
   }
 }

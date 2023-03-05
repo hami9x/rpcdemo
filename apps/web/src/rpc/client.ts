@@ -1,9 +1,16 @@
-import { RpcHandler, rpcSchema, RpcSchema, SessionState, SessionUser } from "@assignment1/core";
+import { RpcHandler, rpcSchema, RpcSchema, SessionUser } from "@assignment1/core";
 import axios, { AxiosInstance, AxiosRequestConfig, CreateAxiosDefaults } from "axios";
-import { JSONRPCClient, JSONRPCResponse } from "json-rpc-2.0";
+import {
+  JSONRPCClient,
+  JSONRPCResponse,
+  JSONRPCErrorException,
+  JSONRPCErrorCode,
+} from "json-rpc-2.0";
 import SuperJSON from "superjson";
+import { showError } from "../notification";
 
 import { parseJwt } from "../utils";
+import { ErrorCode } from "../../../../packages/core/dist/esm/error";
 
 export interface RpcClientParams {}
 
@@ -46,8 +53,8 @@ export class RpcClient {
         .then((response) => {
           if (response.status === 200) {
             return this.jsonRpcClient.receive(this.transformIn(response.data) as JSONRPCResponse);
-          } else if (jsonRPCRequest.id !== undefined) {
-            return Promise.reject(new Error("JSONRPC error: " + response.statusText));
+          } else {
+            return Promise.reject(new Error("Unexpected JSONRPC error"));
           }
         }),
     );
@@ -76,12 +83,16 @@ export class RpcClient {
 
   private createMethodWrapper(method: keyof RpcSchema): any {
     return async (params: any) => {
-      const results = await this.jsonRpcClient.request(method, params, {});
-      return this.transform(results, method);
+      try {
+        return await this.jsonRpcClient.request(method, params, {});
+      } catch (err: any) {
+        if (err instanceof JSONRPCErrorException) {
+          if (err.code == ErrorCode.INVALID_REQUEST || err.code == JSONRPCErrorCode.InvalidParams) {
+            showError({ message: err.message ?? "Invalid request" });
+          }
+        }
+        throw err;
+      }
     };
-  }
-
-  transform(result: any, method: keyof RpcSchema) {
-    return result;
   }
 }

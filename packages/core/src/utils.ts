@@ -8,7 +8,7 @@ export function parseBoolean(value: string | undefined, defaultValue = false) {
   return value == "false" || value == "0" ? false : Boolean(value);
 }
 
-export function paginatedListDefault<T>(): PaginatedList<T> {
+export function getEmptyPaginatedList<T>(): PaginatedList<T> {
   return {
     items: [],
     total: 0,

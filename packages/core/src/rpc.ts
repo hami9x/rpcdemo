@@ -1,4 +1,4 @@
-import { Item, PaginatedList, SessionState, User } from "./types";
+import { Bid, Item, PaginatedList, SessionState, User } from "./types";
 import { Validator } from "./input";
 import { RpcHandlerOf, rpcMethod } from "./base";
 
@@ -29,6 +29,10 @@ export interface ItemCreateResult {
 
 export type FindItemsResult = PaginatedList<Item>;
 
+export interface CreateBidResult {
+  bid: Bid;
+}
+
 export const rpcSchema = {
   getInfo: rpcMethod<GetInfoResult>().input(Validator.getInfo()),
   userRegister: rpcMethod<UserRegisterResult>().input(Validator.userRegister()),
@@ -36,6 +40,7 @@ export const rpcSchema = {
   userDeposit: rpcMethod<UserDepositResult>().input(Validator.userDeposit()),
   createItem: rpcMethod<ItemCreateResult>().input(Validator.createItem()),
   findItems: rpcMethod<FindItemsResult>().input(Validator.findItems()),
+  createBid: rpcMethod<CreateBidResult>().input(Validator.createBid()),
 };
 
 export type RpcSchema = typeof rpcSchema;

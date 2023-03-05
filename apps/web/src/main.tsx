@@ -7,6 +7,7 @@ import { Notifications } from "@mantine/notifications";
 import "./index.css";
 import router from "./router";
 import { SessionProvider } from "./contexts/session";
+import { UserInfoProvider } from "./contexts/userInfo";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -19,7 +20,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       }}>
       <Notifications autoClose={10000} />
       <SessionProvider>
-        <RouterProvider router={router} />
+        <UserInfoProvider>
+          <RouterProvider router={router} />
+        </UserInfoProvider>
       </SessionProvider>
     </MantineProvider>
   </React.StrictMode>,

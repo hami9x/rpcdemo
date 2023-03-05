@@ -35,6 +35,11 @@ export interface FindItemsInput extends PaginationInput {
   };
 }
 
+export interface CreateBidInput {
+  itemId: string;
+  price: number;
+}
+
 export class Validator {
   static id() {
     return Joi.string().alphanum();
@@ -114,5 +119,12 @@ export class Validator {
         },
       }),
     );
+  }
+
+  static createBid() {
+    return Joi.object<CreateBidInput>({
+      itemId: this.id().required(),
+      price: Joi.number().required(),
+    });
   }
 }

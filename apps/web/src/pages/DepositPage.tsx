@@ -7,6 +7,7 @@ import AppLayout from "../components/AppLayout";
 import useRpcService from "../hooks/useRpcService";
 import useSession from "../hooks/useSession";
 import { showSuccess } from "../notification";
+import useUserInfo from "../hooks/useUserInfo";
 
 interface DepositFormInput {
   amount: string;
@@ -55,7 +56,7 @@ function DepositForm({
 
 function DepositPage() {
   const navigate = useNavigate();
-  const { notifyUpdate } = useSession();
+  const userInfo = useUserInfo();
   const { userDeposit } = useRpcService();
   const goBack = () => navigate(-1);
   return (
@@ -65,7 +66,7 @@ function DepositPage() {
         onSubmit={(values) => {
           userDeposit(values).then(() => {
             showSuccess({ message: "Deposit successful" });
-            notifyUpdate();
+            userInfo.reload();
             goBack();
           });
         }}

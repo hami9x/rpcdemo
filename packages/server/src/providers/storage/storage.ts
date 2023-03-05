@@ -13,6 +13,7 @@ export class Storage {
   values: mongoose.Model<model.KVEntry>;
   users: mongoose.Model<model.User>;
   items: mongoose.Model<model.Item>;
+  bids: mongoose.Model<model.Bid>;
 
   constructor(private config: Config) {
     this.snowflake = new Snowflake({});
@@ -20,6 +21,7 @@ export class Storage {
     this.values = mongoose.model<model.KVEntry>("values", model.KVEntrySchema);
     this.users = mongoose.model<model.User>("users", model.UserSchema);
     this.items = mongoose.model<model.Item>("items", model.ItemSchema);
+    this.bids = mongoose.model<model.Bid>("bids", model.BidSchema);
   }
 
   connect() {
