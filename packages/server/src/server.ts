@@ -12,12 +12,12 @@ import http from "http";
 
 import { JsonRpcHandler } from "./handler";
 import { ValidationError } from "joi";
-import { rpcSchema, SessionState, User } from "@assignment1/core";
+import { rpcSchema, SessionState, User, RpcMethod } from "@assignment1/core";
 import { ErrorCode } from "./error";
 import { AppContext, AppProviders, AppState } from "./core";
-import { RpcMethod } from "packages/core/dist/cjs/base";
 import { mustValidate } from "./helpers";
 import _ from "lodash";
+import SuperJSON from "superjson";
 
 export class ApiServer {
   app: Koa<AppState, AppContext>;
@@ -54,13 +54,17 @@ export class ApiServer {
     }
   }
 
-  rpcMethod(handler: any, schema: RpcMethod<any, any>) {
+  private transformOut(output: any) {
+    return SuperJSON.serialize(output);
+  }
+
+  private rpcMethod(handler: any, schema: RpcMethod<any, any>) {
     return async (...params: any[]) => {
       try {
         const [rawInput, ...rest] = params;
         const input = schema.validator ? mustValidate(schema.validator, rawInput) : rawInput;
         const result = await handler(input, ...rest);
-        return result;
+        return this.transformOut(result);
       } catch (err) {
         if (err instanceof ValidationError) {
           throw new JSONRPCErrorException(err.message, JSONRPCErrorCode.InvalidParams, err.details);

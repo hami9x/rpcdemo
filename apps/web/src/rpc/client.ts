@@ -1,6 +1,7 @@
 import { RpcHandler, rpcSchema, RpcSchema, SessionState, SessionUser } from "@assignment1/core";
 import axios, { AxiosInstance, AxiosRequestConfig, CreateAxiosDefaults } from "axios";
-import { JSONRPCClient } from "json-rpc-2.0";
+import { JSONRPCClient, JSONRPCResponse } from "json-rpc-2.0";
+import SuperJSON from "superjson";
 
 import { parseJwt } from "../utils";
 
@@ -31,13 +32,20 @@ export class RpcClient {
     this.user = options.user;
   }
 
+  private transformIn(data: any) {
+    if (data.result) {
+      data.result = SuperJSON.deserialize(data.result);
+    }
+    return data;
+  }
+
   private createJsonRpcClient(): JSONRPCClient<RpcClientParams> {
     return new JSONRPCClient((jsonRPCRequest) =>
       this.httpClient
         .post(this.options.endpoint, jsonRPCRequest, this.getRequestConfig())
         .then((response) => {
           if (response.status === 200) {
-            return this.jsonRpcClient.receive(response.data);
+            return this.jsonRpcClient.receive(this.transformIn(response.data) as JSONRPCResponse);
           } else if (jsonRPCRequest.id !== undefined) {
             return Promise.reject(new Error("JSONRPC error: " + response.statusText));
           }

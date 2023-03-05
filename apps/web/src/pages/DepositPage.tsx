@@ -2,11 +2,11 @@ import { UserDepositInput } from "@assignment1/core";
 import { Box, Button, Group, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
-import { showNotification } from "@mantine/notifications";
 
 import AppLayout from "../components/AppLayout";
 import useRpcService from "../hooks/useRpcService";
 import useSession from "../hooks/useSession";
+import { showSuccess } from "../notification";
 
 interface DepositFormInput {
   amount: string;
@@ -64,7 +64,7 @@ function DepositPage() {
         onCancel={goBack}
         onSubmit={(values) => {
           userDeposit(values).then(() => {
-            showNotification({ message: "Deposit successful" });
+            showSuccess({ message: "Deposit successful" });
             notifyUpdate();
             goBack();
           });

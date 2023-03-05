@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { ProjectionSpec } from "./types";
+import { ItemStatus, ProjectionSpec } from "./types";
 
 export type ProjectionInput = Record<string, ProjectionSpec>;
 
@@ -21,6 +21,18 @@ export interface UserLoginInput {
 
 export interface UserDepositInput {
   amount: number;
+}
+
+export interface CreateItemInput {
+  name: string;
+  startingPrice: number;
+  endingAt: Date;
+}
+
+export interface FindItemsInput extends PaginationInput {
+  filter: {
+    status?: ItemStatus;
+  };
 }
 
 export class Validator {
@@ -82,5 +94,25 @@ export class Validator {
     return Joi.object<UserDepositInput>({
       amount: Joi.number().required(),
     });
+  }
+
+  static createItem(): Joi.ObjectSchema<CreateItemInput> {
+    return Joi.object<CreateItemInput>({
+      name: Joi.string().min(3).max(256).required(),
+      startingPrice: Joi.number().required(),
+      endingAt: Joi.date().required(),
+    });
+  }
+
+  static findItems(): Joi.ObjectSchema<FindItemsInput> {
+    return this.pagination().concat(
+      Joi.object<FindItemsInput>({
+        filter: {
+          status: Joi.string()
+            .valid(...Object.values(ItemStatus))
+            .optional(),
+        },
+      }),
+    );
   }
 }

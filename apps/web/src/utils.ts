@@ -1,5 +1,4 @@
 import ms from "ms";
-import { useEffect } from "react";
 import Joi from "joi";
 import { FormValidateInput } from "@mantine/form/lib/types";
 
@@ -22,19 +21,18 @@ export function parseJwt(token: string): any {
   }
 }
 
-export function timeAgo(time: Date): string {
-  const elapsedMs = Date.now() - time.getTime();
-  if (elapsedMs >= ms("1d")) {
-    return Math.floor(elapsedMs / ms("1d")) + "d";
+export function formatDuration(duration: number): string {
+  if (duration >= ms("1d")) {
+    return Math.floor(duration / ms("1d")) + "d";
   }
-  if (elapsedMs >= ms("1h")) {
-    return Math.floor(elapsedMs / ms("1h")) + "h";
+  if (duration >= ms("1h")) {
+    return Math.floor(duration / ms("1h")) + "h";
   }
-  if (elapsedMs >= ms("1m")) {
-    return Math.floor(elapsedMs / ms("1m")) + "m";
+  if (duration >= ms("1m")) {
+    return Math.floor(duration / ms("1m")) + "m";
   }
-  if (elapsedMs >= ms("1s")) {
-    return Math.floor(elapsedMs / ms("1s")) + "s";
+  if (duration >= ms("1s")) {
+    return Math.floor(duration / ms("1s")) + "s";
   }
   return "0s";
 }

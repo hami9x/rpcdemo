@@ -51,3 +51,18 @@ export type SessionUser = Pick<User, "id" | "email" | "role">;
 export interface UserProfile {
   name: string;
 }
+
+export enum ItemStatus {
+  Active = "active",
+  Ended = "ended",
+}
+
+export interface Item {
+  id: string;
+  name: string;
+  userId: string;
+  startingPrice: number;
+  endingAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}

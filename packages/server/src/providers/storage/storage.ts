@@ -12,12 +12,14 @@ export class Storage {
 
   values: mongoose.Model<model.KVEntry>;
   users: mongoose.Model<model.User>;
+  items: mongoose.Model<model.Item>;
 
   constructor(private config: Config) {
     this.snowflake = new Snowflake({});
 
     this.values = mongoose.model<model.KVEntry>("values", model.KVEntrySchema);
     this.users = mongoose.model<model.User>("users", model.UserSchema);
+    this.items = mongoose.model<model.Item>("items", model.ItemSchema);
   }
 
   connect() {

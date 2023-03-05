@@ -11,6 +11,11 @@ import {
   SessionUser,
   UserDepositInput,
   UserDepositResult,
+  CreateItemInput,
+  ItemCreateResult,
+  FindItemsResult,
+  FindItemsInput,
+  ItemStatus,
 } from "@assignment1/core";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -18,6 +23,7 @@ import _ from "lodash";
 
 import { AppProviders, BaseModule } from "./core";
 import { ErrorCode, newError } from "./error";
+import { paginatedQuery } from "./helpers";
 
 const defaultSystemInfo = {
   version: pkgInfo.version,
@@ -104,5 +110,34 @@ export class JsonRpcHandler extends BaseModule implements RpcHandler {
     userDoc.balanceAmount = (userDoc.balanceAmount || 0) + amount;
     await userDoc.save();
     return { balanceAmount: userDoc.balanceAmount! };
+  }
+
+  async createItem(
+    input: CreateItemInput,
+    session?: SessionState | undefined,
+  ): Promise<ItemCreateResult> {
+    const user = this.requireUser(session);
+    if (input.endingAt <= new Date()) {
+      throw newError(ErrorCode.INVALID_REQUEST, "Ending date must be in the future");
+    }
+
+    const itemDoc = await this.storage.items.create({
+      id: this.storage.generateId(),
+      userId: user.id,
+      name: input.name,
+      startingPrice: input.startingPrice,
+      endingAt: input.endingAt,
+    });
+    return { item: itemDoc.toObject() };
+  }
+
+  async findItems(input: FindItemsInput): Promise<FindItemsResult> {
+    const query: any = {};
+    const filterStatus = input.filter?.status;
+    if (filterStatus) {
+      query.endingAt =
+        filterStatus == ItemStatus.Active ? { $gt: new Date() } : { $lte: new Date() };
+    }
+    return await paginatedQuery(this.storage.items, query, input);
   }
 }

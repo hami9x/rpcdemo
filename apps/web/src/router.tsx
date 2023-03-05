@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
-// import CreateItemPage from "./pages/CreateItemPage";
+import CreateItemPage from "./pages/CreateItemPage";
 import DepositPage from "./pages/DepositPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -23,10 +23,10 @@ const router = createBrowserRouter([
     path: "/deposit",
     element: <DepositPage />,
   },
-  // {
-  //   path: "/create-item",
-  //   element: <CreateItemPage />,
-  // },
+  {
+    path: "/create-item",
+    element: <CreateItemPage />,
+  },
 ]);
 
 export default router;

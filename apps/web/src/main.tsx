@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { MantineProvider } from "@mantine/core";
-import { NotificationsProvider } from "@mantine/notifications";
+import { Notifications } from "@mantine/notifications";
 
 import "./index.css";
 import router from "./router";
@@ -17,11 +17,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         fontFamily: "Inter, Avenir, Helvetica, Arial, sans-serif",
         primaryColor: "dark",
       }}>
-      <NotificationsProvider>
-        <SessionProvider>
-          <RouterProvider router={router} />
-        </SessionProvider>
-      </NotificationsProvider>
+      <Notifications autoClose={10000} />
+      <SessionProvider>
+        <RouterProvider router={router} />
+      </SessionProvider>
     </MantineProvider>
   </React.StrictMode>,
 );
