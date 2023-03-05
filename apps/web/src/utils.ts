@@ -22,12 +22,6 @@ export function parseJwt(token: string): any {
   }
 }
 
-export function useEffectAsync(callback: () => Promise<any>, deps: React.DependencyList) {
-  return useEffect(() => {
-    callback();
-  }, deps);
-}
-
 export function timeAgo(time: Date): string {
   const elapsedMs = Date.now() - time.getTime();
   if (elapsedMs >= ms("1d")) {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useEffectAsync } from "../utils";
+import useEffectAsync from "./useEffectAsync";
 import useRpcService from "./useRpcService";
 import useSession from "./useSession";
 
