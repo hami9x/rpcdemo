@@ -31,6 +31,3 @@ export function getLogger(
   }
   return logger;
 }
-
-export const defaultLogger = getLogger(getConfig());
-export default defaultLogger;

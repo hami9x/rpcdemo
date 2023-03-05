@@ -5,6 +5,8 @@ import { Snowflake } from "nodejs-snowflake";
 
 import * as model from "./models";
 import { Config } from "../config";
+import Debug from "debug";
+const debug = Debug("server:storage");
 
 export class Storage {
   connectionPromise: Promise<typeof mongoose>;
@@ -24,12 +26,20 @@ export class Storage {
     this.bids = mongoose.model<model.Bid>("bids", model.BidSchema);
   }
 
-  connect() {
+  getDbUri() {
     const dbConfig = this.config.db;
-    const dbUri = `mongodb+srv://${dbConfig.user}:${dbConfig.password}@${dbConfig.host}/${dbConfig.database}?${dbConfig.queryParams}`;
-    console.log(`connecting to database: ${dbUri}`);
+    if (dbConfig.uri) {
+      return dbConfig.uri;
+    }
+    return `mongodb+srv://${dbConfig.user}:${dbConfig.password}@${dbConfig.host}/${dbConfig.database}?${dbConfig.queryParams}`;
+  }
+
+  connect() {
+    const dbUri = this.getDbUri();
+    debug(`connecting to database: ${dbUri}`);
+
     this.connectionPromise = mongoose.connect(dbUri).then((result) => {
-      console.log("Connected to db successfully", { uri: dbUri });
+      debug("Connected to db successfully", { uri: dbUri });
       return result;
     });
     return this.connectionPromise;
@@ -51,6 +61,10 @@ export class Storage {
 
   generateId() {
     return this.snowflake.getUniqueID().toString();
+  }
+
+  close() {
+    return mongoose.disconnect();
   }
 }
 

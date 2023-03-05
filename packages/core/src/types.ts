@@ -2,6 +2,11 @@ export type WithoutId<T> = Omit<T, "id">;
 export type OptionalId<T> = Omit<T, "id"> & { id?: string };
 export type WithRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 export type Override<T, R> = Omit<T, keyof R> & R;
+export type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
 
 export enum SortBy {
   Default = "default",

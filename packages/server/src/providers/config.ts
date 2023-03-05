@@ -1,10 +1,7 @@
 import _ from "lodash";
 import { SignOptions } from "jsonwebtoken";
-
 import { parseBoolean } from "@assignment1/core";
-
-import dotenv from "dotenv-flow";
-const env = _.merge(dotenv.config().parsed ?? {}, process?.env ?? {});
+const env = process?.env ?? {};
 
 export interface Config {
   apiserver: {
@@ -16,6 +13,7 @@ export interface Config {
     host: string;
     database: string;
     queryParams: string;
+    uri: string;
   };
   logging: {
     level?: string;
@@ -41,6 +39,7 @@ export function getConfig(): Config {
       host: env.DB_MONGO_HOST || "",
       database: env.DB_MONGO_DATABASE || "",
       queryParams: env.DB_MONGO_QUERY_PARAMS || "retryWrites=true&compressors=zlib",
+      uri: env.DB_MONGO_URI || "",
     },
     logging: {
       level: env.LOG_LEVEL || undefined,

@@ -1,3 +1,6 @@
+import dotenv from "dotenv-flow";
+dotenv.config({ path: process.env.CONFIG_DIR });
+
 import { getProviders, ApiServer } from "@assignment1/server";
 import Yargs from "yargs";
 
