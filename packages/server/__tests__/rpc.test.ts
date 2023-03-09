@@ -1,8 +1,8 @@
 import { assert } from "chai";
 import _ from "lodash";
 
-import { ApiServer } from "@assignment1/server";
-import { getProviders } from "@assignment1/server";
+import { ApiServer } from "@auctiondemo/server";
+import { getProviders } from "@auctiondemo/server";
 import request from "supertest";
 import SuperJSON from "superjson";
 

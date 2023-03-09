@@ -12,7 +12,7 @@ import http from "http";
 
 import { JsonRpcHandler } from "./handler";
 import { ValidationError } from "joi";
-import { rpcSchema, SessionState, User, RpcMethod } from "@assignment1/core";
+import { rpcSchema, SessionState, User, RpcMethod } from "@auctiondemo/core";
 import { ErrorCode } from "./error";
 import { AppContext, AppProviders, AppState } from "./core";
 import { mustValidate } from "./helpers";

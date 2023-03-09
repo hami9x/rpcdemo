@@ -1,6 +1,6 @@
-import * as core from "@assignment1/core";
+import * as core from "@auctiondemo/core";
 import { Schema } from "mongoose";
-export * from "@assignment1/core";
+export * from "@auctiondemo/core";
 
 function buildModelProperties(options: { transform?: (doc: any, ret: any) => any } = {}) {
   return {

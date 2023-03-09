@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { DeepPartial } from "@assignment1/core";
+import { DeepPartial } from "@auctiondemo/core";
 
 import { Config, getConfig } from "./config";
 import { getLogger, Logger } from "./logger";

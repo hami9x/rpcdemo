@@ -1,4 +1,4 @@
-import { RpcHandler, rpcSchema, RpcSchema, SessionUser } from "@assignment1/core";
+import { RpcHandler, rpcSchema, RpcSchema, SessionUser } from "@auctiondemo/core";
 import axios, { AxiosInstance, AxiosRequestConfig, CreateAxiosDefaults } from "axios";
 import {
   JSONRPCClient,
@@ -7,10 +7,10 @@ import {
   JSONRPCErrorCode,
 } from "json-rpc-2.0";
 import SuperJSON from "superjson";
-import { showError } from "../notification";
+import { showError } from "./notification";
 
-import { parseJwt } from "../utils";
-import { ErrorCode } from "../../../../packages/core/dist/esm/error";
+import { parseJwt } from "./utils";
+import { ErrorCode } from "@auctiondemo/core/dist/esm/error";
 
 export interface RpcClientParams {}
 
@@ -89,6 +89,8 @@ export class RpcClient {
         if (err instanceof JSONRPCErrorException) {
           if (err.code == ErrorCode.INVALID_REQUEST || err.code == JSONRPCErrorCode.InvalidParams) {
             showError({ message: err.message ?? "Invalid request" });
+          } else {
+            showError({ message: err.message ?? "Unknown error" });
           }
         }
         throw err;

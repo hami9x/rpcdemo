@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import formatDuration from "format-duration";
 import _ from "lodash";
 import Joi, { ObjectSchema } from "joi";
-import { PaginationInput } from "@assignment1/core";
+import { PaginationInput } from "@auctiondemo/core";
 
 import { ErrorCode, newError } from "./error";
 

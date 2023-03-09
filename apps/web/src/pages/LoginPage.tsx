@@ -1,7 +1,7 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { TextInput, Button, Box, Group } from "@mantine/core";
-import { UserLoginInput, Validator } from "@assignment1/core";
+import { UserLoginInput, Validator } from "@auctiondemo/core";
 
 import AppLayout from "../components/AppLayout";
 import useSession from "../hooks/useSession";

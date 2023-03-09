@@ -1,7 +1,7 @@
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { TextInput, Button, Box, Group } from "@mantine/core";
-import { UserRegisterInput, Validator } from "@assignment1/core";
+import { UserRegisterInput, Validator } from "@auctiondemo/core";
 
 import { toFormValidator } from "../utils";
 import { JSONRPCErrorException } from "json-rpc-2.0";

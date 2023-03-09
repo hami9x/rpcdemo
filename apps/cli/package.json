@@ -1,5 +1,5 @@
 {
-  "name": "@assignment1/cli",
+  "name": "@auctiondemo/cli",
   "version": "0.0.1",
   "license": "UNLICENSED",
   "main": "dist/main",
@@ -12,8 +12,8 @@
     "@types/yargs": "^17.0.19"
   },
   "dependencies": {
-    "@assignment1/core": "workspace:^",
-    "@assignment1/server": "workspace:^",
+    "@auctiondemo/core": "workspace:^",
+    "@auctiondemo/server": "workspace:^",
     "better-sqlite3": "^8.1.0",
     "lodash": "^4.17.21",
     "ms": "^2.1.3",

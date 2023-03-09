@@ -16,7 +16,7 @@ import {
   CreateBidInput,
   Item,
   Override,
-} from "@assignment1/core";
+} from "@auctiondemo/core";
 
 import AppLayout from "../components/AppLayout";
 import useEffectAsync from "../hooks/useEffectAsync";

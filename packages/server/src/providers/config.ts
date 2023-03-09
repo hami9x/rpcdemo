@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { SignOptions } from "jsonwebtoken";
-import { parseBoolean } from "@assignment1/core";
+import { parseBoolean } from "@auctiondemo/core";
 const env = process?.env ?? {};
 
 export interface Config {

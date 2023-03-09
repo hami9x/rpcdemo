@@ -16,7 +16,7 @@ import {
   FindItemsResult,
   FindItemsInput,
   ItemStatus,
-} from "@assignment1/core";
+} from "@auctiondemo/core";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import _ from "lodash";

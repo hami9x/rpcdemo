@@ -1,8 +1,8 @@
 import { JSONRPCErrorException } from "json-rpc-2.0";
-import { ErrorCode } from "@assignment1/core";
+import { ErrorCode } from "@auctiondemo/core";
 import _ from "lodash";
 
-export { ErrorCode } from "@assignment1/core";
+export { ErrorCode } from "@auctiondemo/core";
 
 export function getErrorMessage(code: ErrorCode) {
   return ErrorCode[code].toLowerCase().replace("_", " ");

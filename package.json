@@ -1,5 +1,5 @@
 {
-  "name": "@assignment1/shared",
+  "name": "@auctiondemo/shared",
   "private": true,
   "workspaces": [
     "packages/*",
@@ -29,13 +29,18 @@
   },
   "scripts": {
     "build": "turbo run build",
+    "build:cli": "turbo run build --filter=cli",
     "watch": "turbo run watch --parallel",
     "test": "turbo run test",
     "clean": "rimraf -f -- **/tsconfig.tsbuildinfo **/dist || true",
     "cleanbuild": "yarn clean && rimraf -rf **/node_modules && yarn && yarn build",
-    "apiserver:dev": "CONFIG_DIR=. yarn cli:dev apiserver",
     "cli:dev": "nodemon -r source-map-support/register apps/cli/dist/main.js",
     "cli": "node -r source-map-support/register apps/cli/dist/main.js",
+    "apiserver:dev": "CONFIG_DIR=. yarn cli:dev apiserver",
+    "apiserver": "CONFIG_DIR=. yarn cli apiserver",
+    "web": "yarn workspace @auctiondemo/web",
+    "web:serve": "yarn web preview --host 0.0.0.0",
+    "web:dev": "yarn web dev",
     "lint": "eslint --ext .ts,.tsx .",
     "fix": "yarn lint --fix"
   },
@@ -47,10 +52,6 @@
   },
   "packageManager": "yarn@3.2.4",
   "dependencies": {
-    "@types/chai": "^4.3.4",
-    "@types/debug": "^4.1.7",
-    "debug": "^4.3.4",
-    "gravatar-url": "^4.0.1",
-    "ts-jest": "^29.0.5"
+    "debug": "^4.3.4"
   }
 }

@@ -1,4 +1,4 @@
-import { CreateItemInput, Override } from "@assignment1/core";
+import { CreateItemInput, Override } from "@auctiondemo/core";
 import { Box, Button, Group, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
