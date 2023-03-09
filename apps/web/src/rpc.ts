@@ -1,4 +1,4 @@
-import { RpcHandler, rpcSchema, RpcSchema, SessionUser } from "@auctiondemo/core";
+import { RpcHandler, rpcSchema, RpcSchema, SessionUser, ErrorCode } from "@auctiondemo/core";
 import axios, { AxiosInstance, AxiosRequestConfig, CreateAxiosDefaults } from "axios";
 import {
   JSONRPCClient,
@@ -10,7 +10,6 @@ import SuperJSON from "superjson";
 import { showError } from "./notification";
 
 import { parseJwt } from "./utils";
-import { ErrorCode } from "@auctiondemo/core/dist/esm/error";
 
 export interface RpcClientParams {}
 
