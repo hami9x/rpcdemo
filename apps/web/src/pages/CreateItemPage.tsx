@@ -46,7 +46,7 @@ function CreateItemForm({
         <TextInput withAsterisk label="Name" placeholder="" {...form.getInputProps("name")} />
         <TextInput
           withAsterisk
-          label="staringPrice"
+          label="Starting Price"
           placeholder=""
           {...form.getInputProps("startingPrice")}
         />
